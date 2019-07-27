@@ -7,7 +7,8 @@ def getDataInfo(fileName):
         pd.read_csv(fileName,
                     header=None,
                     sep='\s',
-                    names=["user id", "movie id", "rating", "time stamp"]))
+                    names=["uid", "mid", "rating", "tstamp"],
+                    engine='python'))
     return df
 
 
@@ -18,14 +19,14 @@ def getItemInfo(genreFile, itemFile):
         pd.read_csv(genreFile,
                     header=None,
                     sep='|',
-                    names=["movie type name", "movie type id"]))
+                    names=["type", "tid"]))
     df_item1 = pd.DataFrame(
         pd.read_csv(itemFile,
                     header=None,
                     sep='|',
                     encoding="ISO-8859-1",
                     usecols=[0, 1, 2],
-                    names=["movie id", "movie name", "movie released date"]))
+                    names=["mid", "mname", "date"]))
     df_item2 = pd.DataFrame(
         pd.read_csv(itemFile, header=None, sep='|',
                     encoding="ISO-8859-1")).iloc[:, 5:24]
@@ -62,8 +63,8 @@ def getUserInfo(fileName):
                     header=None,
                     sep='|',
                     names=[
-                        "user id", "user gender", "user occupation",
-                        "user zipcode"
+                        "uid", "gender", 
+                        "occupation", "zipcode"
                     ]))
     return df
 
@@ -77,7 +78,6 @@ def main():
 
 
 if __name__ == "__main__":
-    # df_user = getUserInfo("./ml-100k/u.user")
-    # df1,df2 = getItemInfo("./ml-100k/u.genre", "./ml-100k/u.item")
+    df_user = getUserInfo("./ml-100k/u.user")
+    df1,df2 = getItemInfo("./ml-100k/u.genre", "./ml-100k/u.item")
     df_rank = getDataInfo("./ml-100k/u.data")
-    print(df_rank)
