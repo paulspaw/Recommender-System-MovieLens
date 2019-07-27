@@ -7,10 +7,7 @@ def getDataInfo(fileName):
         pd.read_csv(fileName,
                     header=None,
                     sep='\s',
-                    names=[
-                        "user id", "movie id", "rating",
-                        "time stamp"
-                    ]))
+                    names=["user id", "movie id", "rating", "time stamp"]))
     return df
 
 
@@ -55,7 +52,7 @@ def getItemInfo(genreFile, itemFile):
             22: 'War',
             23: 'Western'
         })
-    return df_genre,df_item
+    return df_genre, df_item
 
 
 def getUserInfo(fileName):
