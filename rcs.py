@@ -92,8 +92,8 @@ def classifyMovie(fileName):
 # euclidean algorithm - compare similarity between two users 
 def euclidean(user1,user2,movieDict):
     #pull out two users from movieDict
-    user1_data=movieDict[user1]
-    user2_data=movieDict[user2]
+    user1_data = movieDict[user1]
+    user2_data = movieDict[user2]
     distance = 0
     #cal euclidean distance
     for key in user1_data.keys():
@@ -103,11 +103,9 @@ def euclidean(user1,user2,movieDict):
  
     return 1/(1+sqrt(distance))
  
-#计算某个用户与其他用户的相似度
 def top10_simliar(userID,movieDict):
     res = []
     for uid in movieDict.keys():
-        #排除与自己计算相似度
         if not uid == userID:
             simliarty = euclidean(userID,uid,movieDict)
             res.append((uid,simliarty))
@@ -119,9 +117,19 @@ def top10_simliar(userID,movieDict):
     User-based collaborative filtering (above)*
     *******************************************
 '''
+def recommend(user,movieDict):
+    #top 10 simliarty
+    top_sim_user = top10_simliar(user,movieDict)[0][0]
+    items = movieDict[top_sim_user]
+    recommendations = []
 
-def recommend():
-    return
+    for item in items.keys():
+        if item not in movieDict[user].keys():
+            recommendations.append((item,items[item]))
+    recommendations.sort(key=lambda val:val[1],reverse=True)
+
+    return recommendations[:10]
+ 
 
 
 def main():
@@ -144,6 +152,8 @@ if __name__ == "__main__":
     data = pd.merge(df_rank, df_item, on='mid').sort_values('uid')
     # data.to_csv("./csv/movie.csv",index=False,sep=',')
     movieDict = classifyMovie(data)
-    # print(movieDict["1"])
-    RES = top10_simliar(1,movieDict)
-    print(RES)
+    # res = top10_simliar(1,movieDict)
+    # print(res)
+    Recommendations = recommend(1,movieDict)
+    for i in range(len(Recommendations)):
+        print("Top ",i+1," movie name: ",Recommendations[i][1][1],"rating: ",Recommendations[i][1][0])
