@@ -63,7 +63,7 @@ def getUserInfo(fileName):
                     header=None,
                     sep='|',
                     names=[
-                        "uid", "gender", 
+                        "uid","age","gender", 
                         "occupation", "zipcode"
                     ]))
     return df
@@ -79,5 +79,15 @@ def main():
 
 if __name__ == "__main__":
     df_user = getUserInfo("./ml-100k/u.user")
-    df1,df2 = getItemInfo("./ml-100k/u.genre", "./ml-100k/u.item")
+    df_genre,df_item = getItemInfo("./ml-100k/u.genre", "./ml-100k/u.item")
     df_rank = getDataInfo("./ml-100k/u.data")
+
+    # trans each dataframe to csv
+    # df_user.to_csv("user.csv",index=False,sep=',')
+    # df_genre.to_csv("genre.csv",index=False,sep=',')
+    # df_item.to_csv("item.csv",index=False,sep=',')
+    # df_rank.to_csv("rank.csv",index=False,sep=',')
+
+    # merge rating file and item file
+    data = pd.merge(df_rank,df_item,on = 'mid')
+    # data.to_csv("movie.csv",index=False,sep=',')
