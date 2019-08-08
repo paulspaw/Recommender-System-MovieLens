@@ -3,7 +3,7 @@ from collections import defaultdict
 import re
 
 
-class UserCF:
+class DataProcess:
     def __init__(self):
         self.genreFile = "./ml-100k/u.genre"
         self.itemFile = "./ml-100k/u.item"
@@ -103,6 +103,6 @@ class UserCF:
         return new_csv
 
 
-if __name__ == "__main__":
-    user_cf = UserCF()
-    user_cf.merge_rating_movies()
+# if __name__ == "__main__":
+#     user_cf = DataProcess()
+#     user_cf.merge_rating_movies()

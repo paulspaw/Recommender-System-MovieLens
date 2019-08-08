@@ -1,9 +1,8 @@
 import pandas as pd
 import numpy as np
-import tensorflow as tf
-from data import UserCF
+from data import DataProcess
 
-class Evaluate:
+class EvaluateMatrix:
     def __init__(self,data):
         self.ratings_df = data.merge_rating_movies()
 
@@ -27,10 +26,10 @@ class Evaluate:
         record
         # 更改数据类型，0表示用户没有对电影评分，1表示用户已经对电影评分
         record = np.array(record, dtype = int)
-        return record
+        return userNo,movieNo,rating, record
         
 
-if __name__ == "__main__":
-    mv = UserCF()
-    evl = Evaluate(mv)
-    record = evl.ratingMatrix()
+# if __name__ == "__main__":
+#     mv = DataProcess()
+#     evl = EvaluateMatrix(mv)
+    # record = evl.ratingMatrix()
