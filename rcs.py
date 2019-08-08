@@ -119,7 +119,9 @@ def top10_simliar(userID,movieDict):
 '''
 def recommend(user,movieDict):
     #top 10 simliarty
+    
     top_sim_user = top10_simliar(user,movieDict)[0][0]
+    print(top10_simliar(user, movieDict))
     items = movieDict[top_sim_user]
     recommendations = []
 
