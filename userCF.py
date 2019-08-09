@@ -3,7 +3,7 @@
 @Author: Peng LIU, Zhihao LI, Kaiwen LUO, Jingjing WANG
 @Date: 2019-08-08 18:43:02
 @LastEditors: Peng LIU
-@LastEditTime: 2019-08-09 17:39:40
+@LastEditTime: 2019-08-09 22:57:33
 '''
 import pandas as pd
 from collections import defaultdict
@@ -97,9 +97,9 @@ class UserBasedCF:
             count += 1
         return total / count
 
-if __name__ == "__main__":
-    data = DataProcess('./ml-100k/u.data')
-    trainData = DataProcess('./ml-100k/u1.base')
-    testData = DataProcess('./ml-100k/u1.test')
-    userCF = UserBasedCF(data, trainData, testData)
-    print(userCF.evaluation(10))
+# if __name__ == "__main__":
+#     data = DataProcess('./ml-100k/u.data')
+#     trainData = DataProcess('./ml-100k/u1.base')
+#     testData = DataProcess('./ml-100k/u1.test')
+#     userCF = UserBasedCF(data, trainData, testData)
+#     print(userCF.evaluation(10))

@@ -3,7 +3,7 @@
 @Author: Peng LIU
 @Date: 2019-08-09 15:23:29
 @LastEditors: Peng LIU
-@LastEditTime: 2019-08-09 16:12:06
+@LastEditTime: 2019-08-09 19:12:10
 '''
 #--------------------------------------------------------
 # Purpose:  基于已知的训练集，"测试集"中的user的item进行评分预测，并进行用户没有接触过的物品进行推荐.
@@ -80,7 +80,8 @@ def loadMovieLensTestSomeUser(userfileName,trainfilename):
         prefer.setdefault(userid, {})
         rating = 0
         for movieid in itemid:
-            prefer[userid][movieid] = float(rating)           
+            prefer[userid][movieid] = float(rating)
+    print(prefer)           
     return prefer  
 
 def OSDistance (prefer, person1, person2):
@@ -341,7 +342,7 @@ if __name__ == "__main__":
 
 
     similarity = sim_pearson
-    for  K in range(4,50):
+    for  K in range(4,6):
         #根据训练集和测试集，得到预测试结果的测结果集，和测试集结果的行数一样    
         setAllUserRating(fileTrain, fileTest, fileResult,similarity,K)    
         #根据测试集和预测结果集，计算模型精确度
