@@ -1,14 +1,21 @@
+'''
+@Description: Process the data file
+@Author: Peng LIU, Zhihao LI, Kaiwen LUO, Jingjing WANG
+@Date: 2019-08-08 18:43:02
+@LastEditors: Peng LIU
+@LastEditTime: 2019-08-09 14:06:39
+'''
 import pandas as pd
 from collections import defaultdict
 import re
 
 
 class DataProcess:
-    def __init__(self):
+    def __init__(self,dataFile):
+        self.dataFile = dataFile
         self.genreFile = "./ml-100k/u.genre"
         self.itemFile = "./ml-100k/u.item"
         self.userFile = "./ml-100k/u.user"
-        self.dataFile = "./ml-100k/u.data"
         self.infoFile = "./ml-100k/u.info"
         self.OcptFile = "./ml-100k/u.occupation"
 
@@ -98,11 +105,13 @@ class DataProcess:
     def merge_rating_movies(self):
         rating = self.getRating()
         movie = self.getMovies()
-        ratings = pd.merge(rating, movie, on='MovieID')
-        new_csv = ratings[['UserID', 'index', 'Rating']]
-        return new_csv
+        movie = movie.drop('MovieTitle', 1)
+        user = self.getUser()
+        temp = pd.merge(rating, user, on='UserID')
+        new = pd.merge(temp, movie, on='MovieID')
+        return new
 
 
 # if __name__ == "__main__":
-#     user_cf = DataProcess()
-#     user_cf.merge_rating_movies()
+#     user_cf = DataProcess('./ml-100k/u.data')
+#     print(user_cf.merge_rating_movies())
