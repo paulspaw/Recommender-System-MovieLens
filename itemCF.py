@@ -3,7 +3,7 @@
 @Author: Peng LIU
 @Date: 2019-08-10 14:59:07
 @LastEditors: Peng LIU
-@LastEditTime: 2019-08-10 20:23:29
+@LastEditTime: 2019-08-10 23:49:46
 '''
 #coding=utf-8
 import pandas as pd
@@ -95,7 +95,7 @@ class ItemBasedCF:
         for mid in weight.keys():
             mvName = self.IdToTitle(mid)
             result.append((mvName,weight[mid]))
-        return result
+        return result,weight
     
     # 根据 movieId 获取 movie title
     def IdToTitle(self, movieID):
@@ -111,7 +111,7 @@ class ItemBasedCF:
         precision = 0
         for user in self.trainMovieDict.keys():
             tu = self.testMovieDict.get(user,{})
-            rank = self.Recommendation(user,K,N) 
+            _,rank = self.Recommendation(user,K,N) 
             for item,_ in rank.items():
                 if item in tu:
                     hit += 1
