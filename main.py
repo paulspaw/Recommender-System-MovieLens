@@ -3,7 +3,7 @@
 @Author: Peng LIU, Zhihao LI, Kaiwen LUO, Jingjing WANG
 @Date: 2019-08-08 18:43:02
 @LastEditors: Peng LIU
-@LastEditTime: 2019-08-09 23:00:05
+@LastEditTime: 2019-08-10 19:23:34
 '''
 
 from data import DataProcess
@@ -17,8 +17,8 @@ def run():
     trainFile = './ml-100k/u1.base'  #训练集
     testFile = './ml-100k/u1.test'  #测试集
     # 输出的数据集
-    predFile = './data/pred_result.data'  #根据测试集得到的预测结果集
-    userBiasFile = './data/userBias.data'  #根据user的用户列表，进行相关物品推荐结果集
+    # predFile = './data/pred_result.data'  #根据测试集得到的预测结果集
+    # userBiasFile = './data/userBias.data'  #根据user的用户列表，进行相关物品推荐结果集
     # 参数
     userID = 1  #用户ID
     K = 10  # K为选取相邻用户个数
@@ -29,12 +29,11 @@ def run():
     userCF = UserCF(data, trainData, testData)
 
     #根据训练集和测试集，得到预测试结果的测结果集，和测试集结果的行数一样
-    userCF.setAllUserRating(predFile, K)
     #根据测试集和预测结果集，计算模型精确度
-    rmse, mae = userCF.calRmseAndMae(predFile)
+    rmse, mae = userCF.calRmseAndMae(K)
     print('rmse: %1.5f\t mae: %1.5f' % (rmse, mae))
     N = 10  #推荐没有接触过的物品的个数，存放到fileResultN文件中
-    TopN = userCF.recommendation(userID, userBiasFile, N, K)
+    TopN = userCF.recommendation(userID, N, K)
 
     i = 1
     for line in TopN:
