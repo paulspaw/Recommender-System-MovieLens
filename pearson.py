@@ -3,7 +3,7 @@
 @Author: Peng LIU
 @Date: 2019-08-09 14:59:00
 @LastEditors: Peng LIU
-@LastEditTime: 2019-08-10 14:42:39
+@LastEditTime: 2019-08-10 19:30:43
 '''
 import pandas as pd
 from collections import defaultdict
@@ -48,7 +48,7 @@ class UserCF:
 
         #共同电影数目
         commonNum = len(common)
-        
+
         #如果没有共同评论过的电影，则返回0
         if commonNum == 0:
             return 0
@@ -87,8 +87,7 @@ class UserCF:
                   for restUser in userSet if restUser != userID]
 
         #按相似度排序
-        scores.sort()
-        scores.reverse()
+        scores.sort(reverse = True)
 
         # 选取临近K个用户
         if len(scores) <= k:  #如果小于k，只选择这些做推荐。
@@ -160,7 +159,7 @@ class UserCF:
 
         return userBias
 
-    def setUserBiasRating(self, userID, userBiasData, K):
+    def setUserBiasRating(self, userID, K):
         # 加载用户数据 物品数据和偏好，其中偏好值为0
         userBias = self.loadUserBias(userID, self.trainMovieDict)
         bias = {}
@@ -170,8 +169,7 @@ class UserCF:
             #取出某用户的物品ID
             for movieID in userBias[userid].keys():
                 #基于训练集预测用户评分(用户数目<=K)
-                rating = self.getRating(self.trainMovieDict, userid, movieID,
-                                        K)
+                rating = self.getRating(self.trainMovieDict, userid, movieID, K)
                 userid = int(userid)
                 bias[userid][movieID] = float(rating)
 
@@ -184,9 +182,10 @@ class UserCF:
     # N 是推荐物品个数
     # K 是临近的用户数
     ##=======================================================
-    def recommendation(self, userID, userBiasData, N, K):
+    def recommendation(self, userID, N, K):
 
-        bias = self.setUserBiasRating(userID, userBiasData, K)
+        bias = self.setUserBiasRating(userID, K)
+        # print(bias)
         #找出用户在训练集中已经评价过的物品ID
         if self.trainMovieDict[userID]:
             for mid in self.trainMovieDict[userID].keys():
