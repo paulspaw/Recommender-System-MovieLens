@@ -3,7 +3,7 @@
 @Author: Peng LIU, Zhihao LI, Kaiwen LUO, Jingjing WANG
 @Date: 2019-08-08 18:43:02
 @LastEditors: Peng LIU
-@LastEditTime: 2019-08-10 20:38:02
+@LastEditTime: 2019-08-10 20:46:15
 '''
 
 from data import DataProcess
@@ -11,14 +11,13 @@ from pearson import UserCFPearson
 from euclidean import UserCFEuclidean
 from itemCF import ItemBasedCF
 
-def run(method):
+def run(userID, method):
     # 输入的数据集
     totalData = './ml-100k/u.data'  #总数据集
     trainFile = './ml-100k/u1.base'  #训练集
     testFile = './ml-100k/u1.test'  #测试集
     
-    # 参数
-    userID = 1  #用户ID
+    # 参数  #用户ID
     K = 10  # K为选取相邻用户个数
     N = 10  #推荐没有接触过的物品的个数
 
@@ -77,8 +76,10 @@ if __name__ == '__main__':
     while True:
         print("input method name (userbased-pearson,userbased-euclidean,itembased):\n")
         method = input()
+        print("input user id:\n")
+        userID = input()
         print("\n--------------------- loading... --------------------\n")
-        method = run(method)
+        method = run(int(userID),method)
         if not method:
             break
         else:
