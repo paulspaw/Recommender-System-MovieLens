@@ -1,9 +1,9 @@
 '''
-@Description: user-based CF
+@Description: user-based CF using Euclidean
 @Author: Peng LIU, Zhihao LI, Kaiwen LUO, Jingjing WANG
 @Date: 2019-08-08 18:43:02
 @LastEditors: Peng LIU
-@LastEditTime: 2019-08-09 22:57:33
+@LastEditTime: 2019-08-10 14:27:44
 '''
 import pandas as pd
 from collections import defaultdict
