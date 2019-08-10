@@ -3,7 +3,7 @@
 @Author: Peng LIU
 @Date: 2019-08-10 14:59:07
 @LastEditors: Peng LIU
-@LastEditTime: 2019-08-10 17:15:48
+@LastEditTime: 2019-08-10 20:23:29
 '''
 #coding=utf-8
 import pandas as pd
@@ -12,7 +12,8 @@ from data import DataProcess
 
 class ItemBasedCF:
 
-    def __init__(self,trainfile,testfile):
+    def __init__(self,data,trainData,testData):
+        self.data = data
         self.trainMovieDict = self.classifyMovie(trainData)
         self.testMovieDict = self.classifyMovie(testData)
         self.itemSimBest = self.ItemSimilarity()
@@ -70,6 +71,7 @@ class ItemBasedCF:
     def Recommendation(self, userID, K, N):
         weight = {}
         count = {}
+        result = []
         #用户历史记录
         movie_rating = self.trainMovieDict.get(userID)
 
@@ -88,9 +90,20 @@ class ItemBasedCF:
         # weight = dict(sorted(weight.items(),key = lambda x :x[1],reverse = True))
         # # print(dict(sorted(weight.items(),key = lambda x :x[1],reverse = True)[:N]))
         # for mid in weight.keys():
-        #     weight[mid] = weight[mid]/count[mid]
+        #     weight[mid] = weight[mid]/count[mid]      
+        weight = dict(sorted(weight.items(),key = lambda x :x[1],reverse = True)[:N])
+        for mid in weight.keys():
+            mvName = self.IdToTitle(mid)
+            result.append((mvName,weight[mid]))
+        return result
+    
+    # 根据 movieId 获取 movie title
+    def IdToTitle(self, movieID):
+        movies = self.data.getMovies()
+        for index, row in movies.iterrows():
+            if movieID == row['MovieID']:
+                return row['MovieTitle']
         
-        return dict(sorted(weight.items(),key = lambda x :x[1],reverse = True)[:N])
 
     def recallAndPrecision(self, K, N):
         hit = 0
@@ -107,22 +120,13 @@ class ItemBasedCF:
         return (hit / (recall * 1.0),hit / (precision * 1.0))
     
 
-if __name__=='__main__':
-    # 输入的数据集
-    totalData = './ml-100k/u.data'  #总数据集
-    trainFile = './ml-100k/u1.base'  #训练集
-    testFile = './ml-100k/u1.test'  #测试集
+# if __name__=='__main__':
+#     # 输入的数据集
+#     totalData = './ml-100k/u.data'  #总数据集
+#     trainFile = './ml-100k/u1.base'  #训练集
+#     testFile = './ml-100k/u1.test'  #测试集
 
-    data = DataProcess(totalData)
-    trainData = DataProcess(trainFile)
-    testData = DataProcess(testFile)
-    ItemCF = ItemBasedCF(trainData, testData)
-    # recd = ItemCF.Recommendation(1,8,10)
-
-    print("%5s%5s%20s%20s" % ('K','N',"recall",'precision'))
-    # K 选取临近的用户数量
-    # N 输出推荐电影的数量
-    for K in [5,10,20,40,80,160]:
-        for N in [5,10,15,20]:
-            recall,precision = ItemCF.recallAndPrecision(K,N)
-            print("%5d%5d%19.3f%%%19.3f%%" % (K,N,recall * 100,precision * 100))
+#     data = DataProcess(totalData)
+#     trainData = DataProcess(trainFile)
+#     testData = DataProcess(testFile)
+#     ItemCF = ItemBasedCF(trainData, testData)

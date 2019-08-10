@@ -3,7 +3,7 @@
 @Author: Peng LIU
 @Date: 2019-08-09 14:59:00
 @LastEditors: Peng LIU
-@LastEditTime: 2019-08-10 19:30:43
+@LastEditTime: 2019-08-10 19:59:18
 '''
 import pandas as pd
 from collections import defaultdict
@@ -12,7 +12,7 @@ import math
 from data import DataProcess
 
 
-class UserCF:
+class UserCFPearson:
     def __init__(self, data, trainData, testData):
         self.data = data
         self.MovieDict = self.classifyMovie(data)

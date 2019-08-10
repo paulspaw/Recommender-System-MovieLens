@@ -3,7 +3,7 @@
 @Author: Peng LIU, Zhihao LI, Kaiwen LUO, Jingjing WANG
 @Date: 2019-08-08 18:43:02
 @LastEditors: Peng LIU
-@LastEditTime: 2019-08-10 14:27:44
+@LastEditTime: 2019-08-10 20:00:39
 '''
 import pandas as pd
 from collections import defaultdict
@@ -11,7 +11,7 @@ import re
 import math
 from data import DataProcess
 
-class UserBasedCF:
+class UserCFEuclidean:
     def __init__(self, data, trainData, testData):
         self.trainData = trainData
         self.testData = testData
