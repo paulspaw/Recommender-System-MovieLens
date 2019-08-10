@@ -81,11 +81,7 @@ class UserCF:
             if itemId in dataDict[user]:
                 userSet.append(user)
         # print(userSet)
-<<<<<<< HEAD
-        # 计算相似性
-=======
         #计算相似性
->>>>>>> 6d5b903b35887757b0598e98259101d2fabd5740
         scores = [(self.pearson(dataDict, userID, restUser), restUser)
                   for restUser in userSet if restUser != userID]
         # print (scores)
@@ -124,30 +120,17 @@ class UserCF:
         averageOther = 0.0
         weightedAverage = 0.0
         simSums = 0.0
-<<<<<<< HEAD
-        # 获取K近邻用户(评过分的用户集)
-        users = self.topKMatches(dataDict, userId, itemId, k=knumber)
-
-        # 获取userId 对某个物品评价的平均值
-=======
         #获取K近邻用户(评过分的用户集)
         users = self.topKMatches(dataDict, userId, itemId, k=knumber)
 
         #获取userId 对某个物品评价的平均值
->>>>>>> 6d5b903b35887757b0598e98259101d2fabd5740
         averageOfUser = self.getAverage(dataDict, userId, itemId)
 
         # 计算每个用户的加权，预测
         for restUser in users:
-<<<<<<< HEAD
-            sim = self.pearson(dataDict, userId, restUser)  # 计算比较其他用户的相似度
-            averageOther = self.getAverage(
-                dataDict, restUser, itemId)  # 该用户的平均分
-=======
             sim = self.pearson(dataDict, userId, restUser)  #计算比较其他用户的相似度
             averageOther = self.getAverage(dataDict, restUser,
                                            itemId)  #该用户的平均分
->>>>>>> 6d5b903b35887757b0598e98259101d2fabd5740
             # 累加
             simSums += abs(sim)  # 取绝对值
             weightedAverage += averageOther * abs(sim)  # 累加，一些值为负
@@ -172,16 +155,6 @@ class UserCF:
                     rating = self.getRating(
                         self.trainMovieDict, uid, movieid, K)
                     file.write('%s,%s,%s\n' % (uid, movieid, rating))
-=======
-        with open(predictedResult, "w") as file:
-            for uid in self.testMovieDict:  #test集中每个用户
-                for movieid in self.testMovieDict[uid]:
-                    #基于训练集预测用户评分(用户数目<=K)
-                    rating = self.getRating(self.trainMovieDict, uid, movieid,
-                                            K)
-                    file.write('%d,%d,%s\n' % (uid, movieid, rating))
->>>>>>> 6d5b903b35887757b0598e98259101d2fabd5740
-                    inAllnum = inAllnum + 1
         file.close()
 
     def loadUserBias(self, userID, trainDict):
@@ -299,13 +272,10 @@ class UserCF:
         l = float(len(testData))
         return math.sqrt(rmse) / l, mae / l
 
+# if __name__ == "__main__":
+#     data = DataProcess('./ml-100k/u.data')
+#     trainData = DataProcess('./ml-100k/u1.base')
+#     testData = DataProcess('./ml-100k/u1.test')
+#     userCF = UserCF(data, trainData, testData)
+#     userCF.setAllUserRating('./avgRating.data', 5)
 
-<<<<<<< HEAD
-if __name__ == "__main__":
-    data = DataProcess('./ml-100k/u.data')
-    trainData = DataProcess('./ml-100k/u1.base')
-    testData = DataProcess('./ml-100k/u1.test')
-    userCF = UserCF(data, trainData, testData)
-    userCF.setAllUserRating('./avgRating.data', 5)
-=======
->>>>>>> 6d5b903b35887757b0598e98259101d2fabd5740
