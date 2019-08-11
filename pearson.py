@@ -3,7 +3,7 @@
 @Author: Peng LIU
 @Date: 2019-08-09 14:59:00
 @LastEditors: Peng LIU
-@LastEditTime: 2019-08-10 19:59:18
+@LastEditTime: 2019-08-11 10:32:46
 '''
 import pandas as pd
 from collections import defaultdict
@@ -191,6 +191,7 @@ class UserCFPearson:
     def recommendation(self, userID, N, K):
 
         bias = self.setUserBiasRating(userID, K)
+        recommend_list =[]
         # print(bias)
         # 找出用户在训练集中已经评价过的物品ID
         if self.trainMovieDict[userID]:
@@ -209,11 +210,13 @@ class UserCFPearson:
                 for i in range(0, N):
                     mvName = self.IdToTitle(movie_rating[i][0])
                     result.append((userid, mvName, movie_rating[i][1]))
+                    recommend_list.append(movie_rating[i][0])
             else:
                 for i in range(0, len(movie_rating)):
                     mvName = self.IdToTitle(movie_rating[i][0])
                     result.append((userid, mvName, movie_rating[i][1]))
-        return result
+                    recommend_list.append(movie_rating[i][0])
+        return result,recommend_list
 
     # 根据 movieId 获取 movie title
     def IdToTitle(self, movieID):

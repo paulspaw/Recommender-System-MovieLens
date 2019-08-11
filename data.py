@@ -3,7 +3,7 @@
 @Author: Peng LIU, Zhihao LI, Kaiwen LUO, Jingjing WANG
 @Date: 2019-08-08 18:43:02
 @LastEditors: Peng LIU
-@LastEditTime: 2019-08-09 14:06:39
+@LastEditTime: 2019-08-11 11:19:21
 '''
 import pandas as pd
 from collections import defaultdict
@@ -110,7 +110,6 @@ class DataProcess:
         temp = pd.merge(rating, user, on='UserID')
         new = pd.merge(temp, movie, on='MovieID')
         return new
-
 
 # if __name__ == "__main__":
 #     user_cf = DataProcess('./ml-100k/u.data')

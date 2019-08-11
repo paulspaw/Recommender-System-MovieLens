@@ -3,12 +3,13 @@
 @Author: Peng LIU
 @Date: 2019-08-10 14:59:07
 @LastEditors: Peng LIU
-@LastEditTime: 2019-08-10 23:49:46
+@LastEditTime: 2019-08-11 11:56:31
 '''
 #coding=utf-8
 import pandas as pd
 import math
 from data import DataProcess
+from recallAndPrecision import Evaluation
 
 class ItemBasedCF:
 
@@ -72,6 +73,7 @@ class ItemBasedCF:
         weight = {}
         count = {}
         result = []
+        recommend_list = []
         #用户历史记录
         movie_rating = self.trainMovieDict.get(userID)
 
@@ -92,10 +94,13 @@ class ItemBasedCF:
         # for mid in weight.keys():
         #     weight[mid] = weight[mid]/count[mid]      
         weight = dict(sorted(weight.items(),key = lambda x :x[1],reverse = True)[:N])
+        for key,values in  weight.items():
+            recommend_list.append(key)
+            
         for mid in weight.keys():
             mvName = self.IdToTitle(mid)
             result.append((mvName,weight[mid]))
-        return result,weight
+        return result,weight,recommend_list
     
     # 根据 movieId 获取 movie title
     def IdToTitle(self, movieID):
@@ -111,7 +116,7 @@ class ItemBasedCF:
         precision = 0
         for user in self.trainMovieDict.keys():
             tu = self.testMovieDict.get(user,{})
-            _,rank = self.Recommendation(user,K,N) 
+            _,rank,_ = self.Recommendation(user,K,N) 
             for item,_ in rank.items():
                 if item in tu:
                     hit += 1
@@ -129,4 +134,20 @@ class ItemBasedCF:
 #     data = DataProcess(totalData)
 #     trainData = DataProcess(trainFile)
 #     testData = DataProcess(testFile)
-#     ItemCF = ItemBasedCF(trainData, testData)
+#     ItemCF = ItemBasedCF(data,trainData, testData)
+
+#     trainDict = ItemCF.classifyMovie(trainData)
+#     testDict = ItemCF.classifyMovie(testData)
+#     _,_,recommend_list = ItemCF.Recommendation(555,5,5)
+#     eva = Evaluation(trainDict,testDict,5,5,recommend_list)
+
+#     print(eva.Precision())
+
+    # 测算recall 和 precision
+    # print("%5s%5s%20s%20s" % ('K','N',"recall",'precision'))
+    # # K 选取临近的用户数量
+    # # N 输出推荐电影的数量
+    # for k in [5,10,20,40,80,160]:
+    #     for n in [5,10,15,20]:
+    #         recall,precision = ItemCF.recallAndPrecision(k,n)
+    #         print("%5d%5d%19.3f%%%19.3f%%" % (k,n,recall * 100,precision * 100))
