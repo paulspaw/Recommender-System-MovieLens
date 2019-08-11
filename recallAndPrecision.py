@@ -6,13 +6,16 @@
 @LastEditTime: 2019-08-11 13:20:00
 '''
 # recommend_list 必须要在recommend函数里面另外返回一个like rec_list=[3,44,324,623,....]
+import numpy as np
+
+
 class Evaluation:
-    def __init__(self,train,test,N,K):
+    def __init__(self, train, test, N, K):
         self.train = train
         self.test = test
         self.N = N
         self.K = K
-        
+
     def Recall(self):
         hit = 0
         all = 0
@@ -41,18 +44,17 @@ class Evaluation:
         print(self.recommend_list)
         return hit/(all*1.0)
 
-
     def All_item(self):
         all_items = set()
         for user in self.train.keys():
             for item in self.train[user]:
                 all_items.add(item)
         return all_items
-    
-    def Coverage(self,all_items):
+
+    def Coverage(self, all_items):
         recommend_items = set()
         for user in self.train.keys():
-    #         recommend_list = get_recommendation(N, user, K, W, train)
+            #         recommend_list = get_recommendation(N, user, K, W, train)
             for item in self.recommend_list:
                 recommend_items.add(item)
         return len(recommend_items)/(len(all_items)*1.0)
@@ -65,12 +67,12 @@ class Evaluation:
                     item_popularity[item] = 0
                 item_popularity[item] += 1
         return item_popularity
-    
-    def Popularity(self,item_popularity):  
+
+    def Popularity(self, item_popularity):
         ret = 0
         n = 0
         for user in self.train.keys():
-    #         recommend_list = get_recommendation(N, user, K, W, train)
+            #         recommend_list = get_recommendation(N, user, K, W, train)
             for item in self.recommend_list:
                 ret += np.log(1+item_popularity[item])
                 n += 1
