@@ -3,7 +3,7 @@
 @Author: Peng LIU
 @Date: 2019-08-10 14:59:07
 @LastEditors: Peng LIU
-@LastEditTime: 2019-08-11 12:50:42
+@LastEditTime: 2019-08-11 15:35:45
 '''
 #coding=utf-8
 import pandas as pd
@@ -119,9 +119,9 @@ class ItemBasedCF:
         for user in self.trainMovieDict.keys():
             tu = self.testMovieDict.get(user,{})
             _,rank,_ = self.Recommendation(user,K,N)
-            print(rank.items()) 
+            # print(rank.items()) 
             for item,_ in rank.items():
-                print(item)
+                # print(item)
                 if item in tu:
                     hit += 1
             recall += len(tu)

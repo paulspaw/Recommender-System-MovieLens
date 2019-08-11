@@ -3,7 +3,7 @@
 @Author: Peng LIU
 @Date: 2019-08-09 14:59:00
 @LastEditors: Peng LIU
-@LastEditTime: 2019-08-11 13:22:38
+@LastEditTime: 2019-08-11 15:27:47
 '''
 import pandas as pd
 from collections import defaultdict
@@ -274,5 +274,6 @@ class UserCFPearson:
                     hit += 1
             recall += len(tu)
             precision += N
+            print((hit / (recall * 1.0),hit / (precision * 1.0)))
         return (hit / (recall * 1.0),hit / (precision * 1.0))
     

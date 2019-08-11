@@ -3,7 +3,7 @@
 @Author: Peng LIU, Zhihao LI, Kaiwen LUO, Jingjing WANG
 @Date: 2019-08-08 18:43:02
 @LastEditors: Peng LIU
-@LastEditTime: 2019-08-11 10:15:55
+@LastEditTime: 2019-08-11 16:34:19
 '''
 import pandas as pd
 from collections import defaultdict
@@ -209,6 +209,8 @@ if __name__ == "__main__":
     testData = DataProcess('./ml-100k/u1.test')
     UserCFEuclidean = UserCFEuclidean(data, trainData, testData)
     print('Start -----------------------------------')
-    score = UserCFEuclidean.evaluation(10)
+    topN,_ = UserCFEuclidean.predict(123,5,4)
+    print(topN)
+    score = UserCFEuclidean.evaluation(5)
     print(f'Precision {score}')
     print('Completed -------------------------------')
