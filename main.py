@@ -3,7 +3,7 @@
 @Author: Peng LIU, Zhihao LI, Kaiwen LUO, Jingjing WANG
 @Date: 2019-08-08 18:43:02
 @LastEditors: Peng LIU
-@LastEditTime: 2019-08-11 13:36:49
+@LastEditTime: 2019-08-11 16:38:20
 '''
 
 from data import DataProcess
@@ -22,6 +22,7 @@ def run(userID, method):
     # 参数  #用户ID
     K = 5  # K为选取相邻用户个数
     N = 5  # 推荐没有接触过的物品的个数
+    threshold = 4 #评分阀值
 
     data = DataProcess(totalData)
     trainData = DataProcess(trainFile)
@@ -55,9 +56,16 @@ def run(userID, method):
 
         return 0
 
-    elif method == 'userbase-euclidean':
+    elif method == 'userbased-euclidean':
         userCF = UserCFEuclidean(data, trainData, testData)
-        TopN = userCF.predict(userID, 10, 4)
+        TopN,_ = userCF.predict(userID,N,threshold)
+        precision  = userCF.evaluation(N)
+        
+        i = 1
+        for line in TopN:
+            print("top", i, ": ", line[1][1],"\t",line[1][0])
+            i += 1
+        
         return 0
 
     elif method == 'itembased':
