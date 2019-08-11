@@ -3,7 +3,7 @@
 @Author: Peng LIU
 @Date: 2019-08-09 14:59:00
 @LastEditors: Peng LIU
-@LastEditTime: 2019-08-11 10:32:46
+@LastEditTime: 2019-08-11 13:22:38
 '''
 import pandas as pd
 from collections import defaultdict
@@ -261,3 +261,18 @@ class UserCFPearson:
         l = float(len(testData))
 
         return math.sqrt(rmse) / l, mae / l
+
+    def recallAndPrecision(self, K, N):
+        hit = 0
+        recall = 0
+        precision = 0
+        for user in self.trainMovieDict.keys():
+            tu = self.testMovieDict.get(user,{})
+            _,rank = self.recommendation(user,K,N)
+            for item in rank:
+                if item in tu:
+                    hit += 1
+            recall += len(tu)
+            precision += N
+        return (hit / (recall * 1.0),hit / (precision * 1.0))
+    

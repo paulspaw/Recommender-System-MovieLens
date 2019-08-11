@@ -3,16 +3,16 @@
 @Author: Peng LIU
 @Date: 2019-08-11 10:16:40
 @LastEditors: Peng LIU
-@LastEditTime: 2019-08-11 11:50:11
+@LastEditTime: 2019-08-11 13:20:00
 '''
 # recommend_list 必须要在recommend函数里面另外返回一个like rec_list=[3,44,324,623,....]
 class Evaluation:
-    def __init__(self,train,test,N,K,recommendList):
+    def __init__(self,train,test,N,K):
         self.train = train
         self.test = test
         self.N = N
         self.K = K
-        self.recommend_list = recommendList
+        
     def Recall(self):
         hit = 0
         all = 0
@@ -30,14 +30,15 @@ class Evaluation:
         hit = 0
         all = 0
         for user in self.train.keys():
-            # if user not in self.test.keys():
-            #     continue
-            tu = self.test.get(user,{})
+            if user not in self.test.keys():
+                continue
+            tu = self.test[user]
     #         recommend_list = get_recommendation(N, user, K, W, train)
             for item in self.recommend_list:
                 if item in tu:
                     hit += 1
-                all += self.N
+            all += self.N
+        print(self.recommend_list)
         return hit/(all*1.0)
 
 

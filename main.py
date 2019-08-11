@@ -3,7 +3,7 @@
 @Author: Peng LIU, Zhihao LI, Kaiwen LUO, Jingjing WANG
 @Date: 2019-08-08 18:43:02
 @LastEditors: Peng LIU
-@LastEditTime: 2019-08-11 12:02:30
+@LastEditTime: 2019-08-11 13:36:49
 '''
 
 from data import DataProcess
@@ -42,9 +42,16 @@ def run(userID, method):
         for line in TopN:
             print("top",i,": ",line)
             i += 1
-        # evaluation
-        evaluation = Evaluation(trainDict,testDict,recommend_list)
-        print("N: ",N,"K: ",K,"Precision: ",eva.Precision() * 100,"Recall: ",eva.Recall() * 100)
+            
+        # 测算recall 和 precision
+        print("%5s%5s%20s%20s" % ('K','N',"recall",'precision'))
+        # K 选取临近的用户数量
+        # N 输出推荐电影的数量
+        for k in [5,10,20,40,80,160]:
+            for n in [5,10,15,20]:
+                recall,precision = userCF.recallAndPrecision(k,n)
+                print("%5d%5d%19.3f%%%19.3f%%" % (k,n,recall * 100,precision * 100))
+        
         return 0
             
     elif method == 'userbase-euclidean':
@@ -56,22 +63,19 @@ def run(userID, method):
         #itemBased - 余弦函数
         ItemCF = ItemBasedCF(data,trainData, testData)
         TopN,_,recommend_list = ItemCF.Recommendation(userID,K,N)
-        trainDict = ItemCF.classifyMovie(trainData)
-        testDict = ItemCF.classifyMovie(testData)
-        eva = Evaluation(trainDict,testDict,K,N,recommend_list)
-    
+        
+
         i = 1
         for line in TopN:
             print("top",i,": ",line)
             i += 1
-        print("N: ",N,"K: ",K,"Precision: ",eva.Precision() * 100,"Recall: ",eva.Recall() * 100)
 
         # 测算recall 和 precision
         print("%5s%5s%20s%20s" % ('K','N',"recall",'precision'))
         # K 选取临近的用户数量
         # N 输出推荐电影的数量
-        for k in [5]:
-            for n in [5]:
+        for k in [5,10,20,40,80,160]:
+            for n in [5,10,15,20]:
                 recall,precision = ItemCF.recallAndPrecision(k,n)
                 print("%5d%5d%19.3f%%%19.3f%%" % (k,n,recall * 100,precision * 100))
         return 0
