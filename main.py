@@ -22,7 +22,7 @@ def run(userID, method):
     # 参数  #用户ID
     K = 5  # K为选取相邻用户个数
     N = 5  # 推荐没有接触过的物品的个数
-    threshold = 4 #评分阀值
+    threshold = 4  # 评分阀值
 
     data = DataProcess(totalData)
     trainData = DataProcess(trainFile)
@@ -58,14 +58,14 @@ def run(userID, method):
 
     elif method == 'userbased-euclidean':
         userCF = UserCFEuclidean(data, trainData, testData)
-        TopN,_ = userCF.predict(userID,N,threshold)
-        precision  = userCF.evaluation(N)
-        
+        TopN, _ = userCF.predict(userID, N, threshold)
+        precision = userCF.evaluation(N)
+
         i = 1
         for line in TopN:
-            print("top", i, ": ", line[1][1],"\t",line[1][0])
+            print("top", i, ": ", line[1][1], "\t", line[1][0])
             i += 1
-        
+
         return 0
 
     elif method == 'itembased':
@@ -83,7 +83,7 @@ def run(userID, method):
         # K 选取临近的用户数量
         # N 输出推荐电影的数量
         for k in [5, 10, 20, 40, 80, 160]:
-            for n in [5, 10, 15, 20]:
+            for n in [10]:
                 recall, precision = ItemCF.recallAndPrecision(k, n)
                 # print("%5d%5d%19.3f%%%19.3f%%" % (k,n,recall * 100,precision * 100))
         return 0
