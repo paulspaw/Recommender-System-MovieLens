@@ -3,7 +3,7 @@
 @Author: Peng LIU
 @Date: 2019-08-10 14:59:07
 @LastEditors: Peng LIU
-@LastEditTime: 2019-08-11 11:56:31
+@LastEditTime: 2019-08-11 12:50:42
 '''
 #coding=utf-8
 import pandas as pd
@@ -94,8 +94,10 @@ class ItemBasedCF:
         # for mid in weight.keys():
         #     weight[mid] = weight[mid]/count[mid]      
         weight = dict(sorted(weight.items(),key = lambda x :x[1],reverse = True)[:N])
+        # print(sorted(weight.items(),key = lambda x :x[1],reverse = True)[:N])
         for key,values in  weight.items():
             recommend_list.append(key)
+            # print(key,values)
             
         for mid in weight.keys():
             mvName = self.IdToTitle(mid)
@@ -116,12 +118,16 @@ class ItemBasedCF:
         precision = 0
         for user in self.trainMovieDict.keys():
             tu = self.testMovieDict.get(user,{})
-            _,rank,_ = self.Recommendation(user,K,N) 
+            _,rank,_ = self.Recommendation(user,K,N)
+            print(rank.items()) 
             for item,_ in rank.items():
+                print(item)
                 if item in tu:
                     hit += 1
             recall += len(tu)
             precision += N
+        # for key,values in  rank.items():
+        #     print(key)
         return (hit / (recall * 1.0),hit / (precision * 1.0))
     
 
