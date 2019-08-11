@@ -11,13 +11,13 @@ import re
 
 
 class DataProcess:
-    def __init__(self,dataFile):
-        self.dataFile = dataFile
+    def __init__(self, dataFile):
         self.genreFile = "./ml-100k/u.genre"
         self.itemFile = "./ml-100k/u.item"
         self.userFile = "./ml-100k/u.user"
         self.infoFile = "./ml-100k/u.info"
         self.OcptFile = "./ml-100k/u.occupation"
+        self.dataFile = dataFile
 
     def getRating(self):
         ratings = pd.read_csv(
@@ -26,6 +26,18 @@ class DataProcess:
             sep='\s',
             names=['UserID', 'MovieID', 'Rating', 'TimeStamp'],
             engine='python')
+        ratings = ratings[['UserID', 'MovieID', 'Rating']]
+        return ratings
+
+    def getLrRating(self):
+        ratings = pd.read_csv(
+            self.dataFile,
+            header=None,
+            sep='\s',
+            names=['UserID', 'MovieID', 'Rating', 'TimeStamp'],
+            engine='python')
+        ratings = ratings[['UserID', 'MovieID', 'Rating']]
+#         ratings['Rating'] = ratings['Rating'].map({5:1, 4:1, 3:0, 2:0, 1:0})
         return ratings
 
     def getGenre(self):
@@ -61,11 +73,26 @@ class DataProcess:
                              usecols=lattr1 + lattr2,
                              names=movies_title,
                              engine='python')
-        movies["index"] = movies.index
-        title = ['index', 'MovieID', 'MovieTitle']
-        movies = movies[title]
-
+        movies_title = [
+            'MovieID', 'MovieTitle', 'unknown', 'Action',
+            'Adventure', 'Animation', 'Children\'s\'', 'Comedy', 'Crime',
+            'Documentary', 'Drama', 'Fantasy', 'Film-Noir', 'Horror',
+            'Musical', 'Mystery', 'Romance', 'Sci-Fi', 'Thriller', 'War',
+            'Western'
+        ]
+        movies = movies[movies_title]
         return movies
+
+    def getMoviesInfo(self):
+        movies = self.merge_rating_movies()
+        movies = movies.drop(["Rating"], axis=1)
+        movieDict = {}
+        for index, row in movies.iterrows():
+            if row[1] not in movieDict.keys():
+                movieDict[row[1]] = [row.values]
+            else:
+                movieDict[row[1]].append(row.values)
+        return movieDict
 
     def getUser(self):
         occupation = pd.read_csv(self.OcptFile,
@@ -104,6 +131,15 @@ class DataProcess:
 
     def merge_rating_movies(self):
         rating = self.getRating()
+        movie = self.getMovies()
+        movie = movie.drop('MovieTitle', 1)
+        user = self.getUser()
+        temp = pd.merge(rating, user, on='UserID')
+        new = pd.merge(temp, movie, on='MovieID')
+        return new
+
+    def merge_lrRating_movies(self):
+        rating = self.getLrRating()
         movie = self.getMovies()
         movie = movie.drop('MovieTitle', 1)
         user = self.getUser()
