@@ -3,8 +3,9 @@
  * @Author: Peng LIU
  * @Date: 2019-07-27 14:03:56
  * @LastEditors: Peng LIU
- * @LastEditTime: 2019-08-09 23:38:06
+ * @LastEditTime: 2019-08-11 22:24:19
  -->
 # Recommender-System---MovieLens
 ## 如何运行
-    python3 main.py
+### item-based CF
+    python3 itemBasedCF.py

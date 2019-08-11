@@ -3,7 +3,7 @@
 @Author: Peng LIU
 @Date: 2019-08-10 14:59:07
 @LastEditors: Peng LIU
-@LastEditTime: 2019-08-11 19:36:29
+@LastEditTime: 2019-08-11 22:18:55
 '''
 #coding=utf-8
 import pandas as pd
@@ -92,11 +92,6 @@ class ItemBasedCF:
                 weight.setdefault(mvId,0)
                 #每一个电影推荐的分数是  电影用户打分 * 矩阵相似分数
                 weight[mvId] += rating * sim
-
-        # weight = dict(sorted(weight.items(),key = lambda x :x[1],reverse = True))
-        # # print(dict(sorted(weight.items(),key = lambda x :x[1],reverse = True)[:N]))
-        # for mid in weight.keys():
-        #     weight[mid] = weight[mid]/count[mid]
         
         return dict(sorted(weight.items(),key = lambda x :x[1],reverse = True)[:N])
 
@@ -127,7 +122,12 @@ class ItemBasedCF:
         
         return precision, recall, coverage, popularity
 
+    def idToTitle(self,movieID,data):
+        for index,row in data.iterrows():
+            if movieID == row['MovieID']:
+                return row['MovieTitle']
 
+    
 if __name__=='__main__':
     # 输入的数据集
     totalData = './ml-100k/u.data'  #总数据集
@@ -138,12 +138,19 @@ if __name__=='__main__':
     trainData = DataProcess(trainFile)
     testData = DataProcess(testFile)
     ItemCF = ItemBasedCF(trainData, testData)
-    # recd = ItemCF.Recommendation(1,8,10)
+    movie_df = data.getMovies()
+    
     N = 10
+    recd = ItemCF.Recommendation(userID=123,K=10,N=10)
+    i=1
+    print("userID=123,K=10,N=10")
+    for key in recd.items():
+        print("Top: ", i,ItemCF.idToTitle(key[0],movie_df))
+        i += 1
 
     print("%5s%5s%20s%20s%20s%20s" % ('K','N','precision(%)',"recall(%)",'coverage(%)','popularity'))
     # K 选取临近的用户数量
     # N 输出推荐电影的数量
-    for K in [5,10,20,40,80,160]:
+    for K in [5,10,20,50,100]:
         precision,recall,coverage,popularity= ItemCF.recallAndPrecision(K,N)
         print('%5d%5d%19.3f%19.3f%19.3f%19.3f' % (K,N,precision * 100,recall * 100,coverage * 100,popularity))
