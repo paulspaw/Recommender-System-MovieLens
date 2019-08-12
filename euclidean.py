@@ -350,19 +350,19 @@ if __name__ == "__main__":
     UserCFEuclidean = UserCFEuclidean(data, trainData, testData, lr)
     # UserCFEuclidean.recallAndPrecision(5, 5)
 
-    # print('(without logistic regression)')
-    # print("%5s%5s%20s%20s%20s%20s" %
-    #       ('K', 'N', 'precision(%)', "recall(%)", 'coverage(%)', 'popularity'))
+    print('(without logistic regression)')
+    print("%5s%5s%20s%20s%20s%20s" %
+          ('K', 'N', 'precision(%)', "recall(%)", 'coverage(%)', 'popularity'))
     # K 选取临近的用户数量
     # N 输出推荐电影的数量
     N = 10
-    # for K in [5, 10, 20, 40, 80, 160]:
-    #     precision, recall, coverage, popularity = UserCFEuclidean.recallAndPrecision(
-    #         K, N)
-    #     print('%5d%5d%19.3f%19.3f%19.3f%19.3f' %
-    #           (K, N, precision * 100, recall * 100, coverage * 100, popularity))
+    for K in [5, 10, 20, 40, 80, 160]:
+        precision, recall, coverage, popularity = UserCFEuclidean.recallAndPrecision(
+            K, N)
+        print('%5d%5d%19.3f%19.3f%19.3f%19.3f' %
+              (K, N, precision * 100, recall * 100, coverage * 100, popularity))
 
-    # print()
+    print()
     print('(with logistic regression)')
     print("%5s%5s%20s%20s%20s%20s" %
           ('K', 'N', 'precision(%)', "recall(%)", 'coverage(%)', 'popularity'))
