@@ -37,7 +37,8 @@ class DataProcess:
             names=['UserID', 'MovieID', 'Rating', 'TimeStamp'],
             engine='python')
         ratings = ratings[['UserID', 'MovieID', 'Rating']]
-#         ratings['Rating'] = ratings['Rating'].map({5:1, 4:1, 3:0, 2:0, 1:0})
+        ratings['Rating'] = ratings['Rating'].map(
+            {5: 1, 4: 1, 3: 0, 2: 0, 1: 0})
         return ratings
 
     def getGenre(self):
