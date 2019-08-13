@@ -36,7 +36,7 @@ class UserCFPearson:
                                                             row["MovieTitle"])
         return movieDict
 
-    # 皮尔逊算法
+    # Pearson similarity
     def pearson(self, dataDict, user1, user2):
         user1_data = dataDict[user1]
         user2_data = dataDict[user2]
@@ -46,22 +46,22 @@ class UserCFPearson:
             if key in user2_data.keys():
                 common[key] = 1
 
-        # 共同电影数目
+        # Number of Common Movies
         commonNum = len(common)
 
-        # 如果没有共同评论过的电影，则返回0
+        # if no common movies，return 0
         if commonNum == 0:
             return 0
 
-        # 计算评分和
+        # Calculate the sum
         sum1 = sum([float(user1_data[movie][0]) for movie in common])
         sum2 = sum([float(user2_data[movie][0]) for movie in common])
 
-        # 计算评分平方和
+        # Calculate the sum of squares
         sum1Sq = sum([pow(float(user1_data[movie][0]), 2) for movie in common])
         sum2Sq = sum([pow(float(user2_data[movie][0]), 2) for movie in common])
 
-        # 计算乘积和
+        # calculate multiple
         PSum = sum([
             float(user1_data[i][0]) * float(user2_data[i][0]) for i in common
         ])
@@ -77,30 +77,30 @@ class UserCFPearson:
         userSet = []
         scores = []
         users = []
-        # 找出所有 dataDict 中评价过 movie 的用户,存入userSet
+        # Find out all users who have evaluated movie in dataDict and save them in userSet
         for user in dataDict:
             if movieId in dataDict[user]:
                 userSet.append(user)
 
-        # 计算相似性 scores = [(sim, userID)...]
+        # similarity scores = [(sim, userID)...]
         scores = [(self.pearson(dataDict, userID, restUser), restUser)
                   for restUser in userSet if restUser != userID]
 
-        # 按相似度排序
+        # order by similarity
         scores.sort(reverse=True)
 
-        # 选取临近K个用户
-        if len(scores) <= k:  # 如果小于k，只选择这些做推荐。
+        # chose K neighboor
+        if len(scores) <= k:  # <k，only recommend these
             for item in scores:
-                users.append(item[1])  # 提取每项的userId
+                users.append(item[1])  # get userId
             return users
-        else:  # 如果 >k,截取k个用户
+        else:  # if >k, cut k users
             for item in scores[:k]:
-                users.append(item[1])  # 提取每项的userId
+                users.append(item[1])  # get userId
 
-            return users  # 返回K个最相似用户的ID
+            return users  # return K likely ID
 
-    # 计算用户对某电影的平均评分
+    # Calculate the average user rating for a movie
     def getAverage(self, dataDict, userId, movieId):
         count = 0
         sum = 0.0
@@ -113,36 +113,36 @@ class UserCFPearson:
         else:
             return sum / count
 
-    # 平均加权策略，预测userId对itemId的评分
+    # Average Weighting Strategy，predict userId's rating to itemId
     def getRating(self, dataDict, userId, movieId, knumber):
         sim = 0.0
         avgOther = 0.0
         weightedAverage = 0.0
         simSums = 0.0
 
-        # 获取K近邻用户(评过分的用户集)
+        # Get K-Nearest Neighbor Users (Overrated User Set)
         users = self.topKMatches(dataDict, userId, movieId, k=knumber)
 
-        # 获取userId 对某个物品评价的平均值
+        # Obtain the average value of userId's evaluation of an item
         avgOfUser = self.getAverage(dataDict, userId, movieId)
 
-        # 计算每个用户的加权，预测
+        # Calculate the weights of each user, predict
         for restUser in users:
-            # 计算比较其他用户的相似度
+            # Computing and comparing the similarities of other users
             sim = self.pearson(dataDict, userId, restUser)
-            # 该用户的平均分
+            # Average score of the user
             avgOther = self.getAverage(dataDict, restUser, movieId)
-            # 累加相似度
+            # Cumulative similarity
             simSums += abs(sim)
             weightedAverage += avgOther * abs(sim)
 
-        # simSums为0，即该项目尚未被其他用户评分，这里的处理方法：返回用户平均分
+        # simSums is 0，That is, the project has not been scored by other users. The method here is to return the average score of users.
         if simSums == 0:
             return avgOfUser
         else:
             return weightedAverage / simSums
 
-    # 获取所有用户的预测评分，存放到resultFile中
+    # Get all users' predictive ratings and store them in resultFile
     def setAllUserRating(self, predictedResult, K):
         inAllnum = 0
 
@@ -155,7 +155,7 @@ class UserCFPearson:
         for index, row in movieData.iterrows():
             itemid.append(row['MovieID'])
 
-        itemid = set(itemid)  # 去重，并排序
+        itemid = set(itemid)  # Deduplicate and sort
 
         userBias.setdefault(userID, {})
         rating = 0
@@ -165,7 +165,7 @@ class UserCFPearson:
         return userBias
 
     def setUserBiasRating(self, userID, K):
-        # 加载用户数据 物品数据和偏好，其中偏好值为0
+        # Load user data item data and preferences with a preference value of 0
         userBias = self.loadUserBias(userID, self.trainMovieDict)
         bias = {}
         # 用户全部训练集物品 ID
@@ -173,7 +173,7 @@ class UserCFPearson:
             bias.setdefault(userid, {})
             # 取出某用户的物品ID
             for movieID in userBias[userid].keys():
-                # 基于训练集预测用户评分(用户数目<=K)
+                # Predicting User Score Based on Training Set (Number of Users <=K)
                 rating = self.getRating(
                     self.trainMovieDict, userid, movieID, K)
                 userid = int(userid)
@@ -182,30 +182,28 @@ class UserCFPearson:
         return bias
 
     # =======================================================
-    # recommendation(): 电影推荐函数
-    # userID 是需要推荐的用户
-    # userBiasData 是用户对所有电影的偏好度
-    # N 是推荐物品个数
-    # K 是临近的用户数
+    # recommendation(): Film Recommendation Function
+    # userID It's a recommended user.
+    # userBiasData It's the user's preference for all movies.
     # =======================================================
     def recommendation(self, userID, N, K):
 
         bias = self.setUserBiasRating(userID, K)
         recommend_list =[]
         # print(bias)
-        # 找出用户在训练集中已经评价过的物品ID
+        # Identify the item ID that the user has evaluated in the training set
         if self.trainMovieDict[userID]:
             for mid in self.trainMovieDict[userID].keys():
                 bias[userID][mid] = 0.0
 
-        # 排序取前N个物品的偏好值
+        # Preference values of the first N items in order
         result = []
         for userid in bias:
-            # 排序
+            # order
             movie_rating = sorted(bias[userid].items(),
                                   key=lambda x: x[1],
                                   reverse=True)
-            # 每个用户要输出多少个偏好物品
+            # output preferences of each user
             if N < len(movie_rating):
                 for i in range(0, N):
                     mvName = self.IdToTitle(movie_rating[i][0])
@@ -218,7 +216,7 @@ class UserCFPearson:
                     recommend_list.append(movie_rating[i][0])
         return result,recommend_list
 
-    # 根据 movieId 获取 movie title
+    # by movieId get movie title
     def IdToTitle(self, movieID):
         for uid in self.MovieDict.keys():
             for mid in self.MovieDict[uid].keys():
@@ -228,14 +226,14 @@ class UserCFPearson:
                     return self.MovieDict[uid][mid][1]
 
     # ==================================================================
-    # getRmseAndMae(): 根据对测试集的评测结果，进行评分预测
+    # getRmseAndMae(): According to the evaluation results of the test set, the score prediction is made.
     # ==================================================================
 
-    # 获取所有用户的预测评分，返回 predicted users' rating dictionary for all movies
+    # Get all users'predictive ratings and return predicted users' rating dictionary for all movies
     def setAllUserRating(self, K):
         predictedDict = {}
 
-        for uid in self.testMovieDict.keys():  # test集中每个用户
+        for uid in self.testMovieDict.keys():  # each user in test
             predictedDict.setdefault(uid, {})
             for movieid in self.testMovieDict[uid].keys():
                 # 基于训练集预测用户评分(用户数目<=K)
@@ -247,13 +245,13 @@ class UserCFPearson:
     # 计算 rmse 和 mae
     def calRmseAndMae(self, K):
         testData = self.testMovieDict
-        resultData = self.setAllUserRating(K)  # 加载预测结果集
+        resultData = self.setAllUserRating(K)  # Loading Prediction Result Set
 
         rmse = 0.0
         mae = 0.0
         for userid in testData.keys():  # test集中每个用户
             for mvid in testData[userid].keys(
-            ):  # 对于test集合中每一个项目用base数据集,CF预测评分
+            ):  # For each item in the test set with base data set, CF predictive score
                 r1 = testData[userid][mvid][0]
                 r2 = resultData[userid][mvid]
                 rmse += (r1 - r2)**2
@@ -281,16 +279,19 @@ if __name__ == "__main__":
     N = 10
 
     # 输入的数据集
-    totalData = './ml-100k/u.data'  # 总数据集
-    trainFile = './ml-100k/u1.base'  # 训练集
-    testFile = './ml-100k/u1.test'  # 测试集
+    totalData = './ml-100k/u.data'  # dataset
+    trainFile = './ml-100k/u1.base'  # train_set
+    testFile = './ml-100k/u1.test'  # test_set
     
     data = DataProcess(totalData)
     trainData = DataProcess(trainFile)
     testData = DataProcess(testFile)
     userCF = UserCFPearson(data, trainData, testData)
-    # 根据训练集和测试集，得到预测试结果的测结果集，和测试集结果的行数一样
-    # 根据测试集和预测结果集，计算模型精确度
+    # According to the training set and test set, the test 
+    # result set of predicting test result is obtained, 
+    # which is the same as the number of rows of test result set.
+
+    # Calculate model accuracy based on test set and prediction result set
     # rmse, mae = userCF.calRmseAndMae(K)
     # print('rmse: %1.5f\t mae: %1.5f' % (rmse, mae))
     TopN, _ = userCF.recommendation(userID=123, N=10, K=10)
@@ -304,8 +305,6 @@ if __name__ == "__main__":
 
     # # 测算recall 和 precision
     # print("%5s%5s%20s%20s" % ('K', 'N', "recall", 'precision'))
-    # # K 选取临近的用户数量
-    # # N 输出推荐电影的数量
     # for k in [5, 10, 20, 50, 100]:
     #     recall, precision = userCF.recallAndPrecision(k, N)
     #     print("%5d%5d%19.3f%%%19.3f%%" % (k,n,recall * 100,precision * 100))
